@@ -12,7 +12,7 @@ Confx is a minimal configuration management tool which makes it easy to inject v
  
  ### Usage
  ```shell
- # by default confd expect configurations in /etc/confx/conf.d and templates in /etc/confx/templates
+ # by default confx expects configurations in /etc/confx/conf.d and templates in /etc/confx/templates
  confx
  
  # you may optionally provide a configuration or template directory to use
