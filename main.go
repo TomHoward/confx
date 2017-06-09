@@ -23,11 +23,11 @@ var commitId string
 func main() {
 	configurationDirFlag := flag.String("c", "", "configuration path directory")
 	templatesDirFlag := flag.String("t", "", "template path directory")
-	versionFlag := flag.Bool("v", true, "print version number")
+	versionFlag := flag.Bool("v", false, "print version number")
 
 	flag.Parse()
 
-	if versionFlag != nil {
+	if versionFlag != nil && *versionFlag {
 		fmt.Printf("confx v%s (%s) | https://github.com/tomhoward/confx\n", version, commitId)
 		os.Exit(0)
 	}
