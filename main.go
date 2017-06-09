@@ -57,12 +57,12 @@ func main() {
 	for _, configPath := range configPaths {
 		config, err := parseConfig(configPath)
 		if err != nil {
-			log.Fatalf("could not parse config for %s\n", configPath)
+			log.Fatalf("could not parse config for %s: %s\n", configPath, err)
 		}
 
 		templateSrc := path.Join(templatesPathDir, config.Template.Src)
 
-		log.Println(templateSrc)
+		log.Printf("%s -> %s", templateSrc, config.Template.Dest)
 
 		values := config.GetValues()
 		tmpl, err := template.New("main").Funcs(template.FuncMap{

@@ -38,7 +38,7 @@ func (c *config) GetValues() map[string]string {
 		}
 
 		if err != nil {
-			log.Fatal(err)
+			log.Fatalf("%s: %s", source.Name, err)
 		}
 
 		sourceValues, err := backend.GetValues(source.Keys)
