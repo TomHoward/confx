@@ -15,11 +15,22 @@ import (
 
 const DEFAULT_TEMPLATE_PATH = "/etc/confx/templates"
 
+// confx version and commit ID, set during compilation
+// go build -ldflags "-X main.version=0.0.2 -X main.commitId=$(git rev-parse --short HEAD)"
+var version string
+var commitId string
+
 func main() {
 	configurationDirFlag := flag.String("c", "", "configuration path directory")
 	templatesDirFlag := flag.String("t", "", "template path directory")
+	versionFlag := flag.Bool("v", true, "print version number")
 
 	flag.Parse()
+
+	if versionFlag != nil {
+		fmt.Printf("confx v%s (%s) | https://github.com/tomhoward/confx\n", version, commitId)
+		os.Exit(0)
+	}
 
 	var templatesPathDir string
 	var configPathDir string
