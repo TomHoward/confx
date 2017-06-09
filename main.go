@@ -37,17 +37,17 @@ func main() {
 	}
 
 	if _, err := os.Stat(configPathDir); err != nil {
-		log.Fatal("Could not find config dir")
+		log.Fatalf("Could not find config dir: %s", configPathDir)
 	}
 
 	if _, err := os.Stat(templatesPathDir); err != nil {
-		log.Fatal("Could not find templates dir")
+		log.Fatalf("Could not find templates dir: %s", templatesPathDir)
 	}
 
 	configPaths, err := getConfigFilePaths(configPathDir)
 
 	if err != nil {
-		log.Fatal("Could not access config dir")
+		log.Fatalf("Could not access config dir: %s", configPathDir)
 	}
 
 	if len(configPaths) == 0 {
@@ -57,7 +57,7 @@ func main() {
 	for _, configPath := range configPaths {
 		config, err := parseConfig(configPath)
 		if err != nil {
-			log.Fatalf("could not parse config for %s: %s\n", configPath, err)
+			log.Fatalf("Could not parse config for %s: %s\n", configPath, err)
 		}
 
 		templateSrc := path.Join(templatesPathDir, config.Template.Src)
@@ -112,7 +112,7 @@ func main() {
 		}).ParseFiles(templateSrc)
 
 		if err != nil {
-			log.Fatalf("Could not parse template : %s\n", err)
+			log.Fatalf("Could not parse template: %s\n", err)
 		}
 
 		var permissions os.FileMode
