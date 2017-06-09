@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	strings "strings"
 )
 
 type EnvBackend struct {
@@ -29,16 +30,23 @@ func (b EnvBackend) GetValues(keyPairs map[string]string) (map[string]string, er
 }
 
 func New(options map[string]interface{}) (EnvBackend, error) {
+	validOptions := []string{"ignore_uninitialised"}
 	backend := EnvBackend{}
 
 	for option, value := range options {
 		switch option {
-		case "ignoreUninitialised":
+		case "ignore_uninitialised":
 			if ignoreUninitialised, ok := value.(bool); ok {
 				backend.ignoreUninitialised = ignoreUninitialised
 			} else {
 				return backend, errors.New(fmt.Sprintf("Invalid type for option '%s', expected bool", option))
 			}
+		default:
+			return backend, errors.New(
+				fmt.Sprintf("Unrecognised option '%s', possible options are %s",
+					option,
+					strings.Join(validOptions, ", "),
+				))
 		}
 	}
 

@@ -40,7 +40,7 @@ Confx is a minimal configuration management tool which makes it easy to inject v
  DATABASE_PASSWORD = "super-secure-password"
  
  # You can optionally also provide parameters to the source to config it
- [souce.env.options]
+ [source.env.options]
  # don't throw an error if an expect environment variable isn't set, instead we can use default values in the template
  ignore_uninitialised = true
  ```
