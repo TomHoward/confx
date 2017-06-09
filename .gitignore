@@ -113,3 +113,6 @@ Temporary Items
 /conf.d
 /templates
 /output
+
+/confx-darwin-amd64
+/confx-linux-amd64
