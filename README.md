@@ -64,3 +64,4 @@ There are also other helper functions available
 * `contains "search-in" "search-for"` - (bool)
 * `toUpper "lower-case-string"` - (string)
 * `toLower "UPPER-CASE-STRING"` - (string)
+* `split "split,me,up" ","` - ([]string)

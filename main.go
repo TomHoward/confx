@@ -120,6 +120,9 @@ func main() {
 			"toLower": func(s string) string {
 				return strings.ToLower(s)
 			},
+			"split": func(s string, delimiter string) []string {
+				return strings.Split(s, delimiter)
+			},
 		}).ParseFiles(templateSrc)
 
 		if err != nil {
