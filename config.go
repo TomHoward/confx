@@ -82,7 +82,7 @@ type rawConfig struct {
 }
 
 func parseEnvVariableString(input string) string {
-	envVariableRegex := regexp.MustCompile("\\$\\{[a-z0-9_]+}")
+	envVariableRegex := regexp.MustCompile("\\$\\{[a-zA-Z0-9_]+}")
 
 	matchIndexes := envVariableRegex.FindAllStringSubmatchIndex(input, -1)
 
