@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/BurntSushi/toml"
 	"github.com/tomhoward/confx/backend"
+	"github.com/tomhoward/confx/backend/consul"
 	"github.com/tomhoward/confx/backend/env"
 	"io/ioutil"
 	"log"
@@ -19,20 +20,30 @@ type config struct {
 	Sources  []configSource
 }
 
-func (c *config) GetValues() map[string]string {
-	values := map[string]string{}
+func (c *config) GetValues() map[string]interface{} {
+	values := map[string]interface{}{}
 
 	for _, source := range c.Sources {
 		var backend backend.Backend
 		var err error
 
-		if len(source.Keys) == 0 {
+		keys := map[string]string{}
+		// remove keys we've already collected
+		for key, remoteKey := range source.Keys {
+			if _, found := values[key]; !found {
+				keys[key] = remoteKey
+			}
+		}
+
+		if len(keys) == 0 {
 			continue
 		}
 
 		switch source.Name {
 		case "env":
 			backend, err = env.New(source.Options)
+		case "consul":
+			backend, err = consul.New(source.Options)
 		default:
 			log.Fatalf("Unknown source type '%s'", source.Name)
 		}
@@ -41,7 +52,7 @@ func (c *config) GetValues() map[string]string {
 			log.Fatalf("%s: %s", source.Name, err)
 		}
 
-		sourceValues, err := backend.GetValues(source.Keys)
+		sourceValues, err := backend.GetValues(keys)
 		if err != nil {
 			log.Fatalf("%s: %s\n", source.Name, err)
 		}
@@ -183,6 +194,12 @@ func parseConfig(path string) (*config, error) {
 	for _, k := range metadata.Keys() {
 		if strings.HasPrefix(k.String(), "source.") {
 			splitKey := strings.SplitN(k.String(), ".", 3)
+
+			// skip source options, subkeys etc
+			if len(splitKey) > 2 {
+				continue
+			}
+
 			sourceName := splitKey[1]
 
 			if source, ok := sources[sourceName]; ok {
@@ -196,7 +213,20 @@ func parseConfig(path string) (*config, error) {
 		}
 	}
 
+	// reverse sources as we want to process bottom to top
+	config.Sources = reverseSources(config.Sources)
+
 	return &config, nil
+}
+
+func reverseSources(sources []configSource) []configSource {
+	output := []configSource{}
+
+	for i := len(sources) - 1; i >= 0; i-- {
+		output = append(output, sources[i])
+	}
+
+	return output
 }
 
 func getConfigFilePaths(configDirPath string) ([]string, error) {

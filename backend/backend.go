@@ -1,5 +1,5 @@
 package backend
 
 type Backend interface {
-	GetValues(map[string]string) (map[string]string, error)
+	GetValues(map[string]string) (map[string]interface{}, error)
 }

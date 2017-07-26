@@ -9,6 +9,7 @@ Confx is a minimal configuration management tool which makes it easy to inject v
  
  #### Supported backends
  * Environment variables
+ * Consul
  
  ### Usage
  ```shell
@@ -23,8 +24,8 @@ Confx is a minimal configuration management tool which makes it easy to inject v
  ```toml
  # Configurations are defined in TOML files
  
- # Every configuration must define a template with a source and destination
- # relative to the configuration and template directories provided when launching
+ # Every configuration must define a template with a source relative to the configuration
+ # directory provided when launching and a destination
  [template]
  src = "some-settings.conf.tmpl"
  dest = "/etc/some-program/some-settings.conf"
@@ -34,14 +35,31 @@ Confx is a minimal configuration management tool which makes it easy to inject v
  permissions = "600"
  
  # backends are defined as sources with its subkeys and values being template relative keys and lookup keys for the source
- [source.env]
- VALUE_IN_TEMPLATE = "ENVIRONMENT_VARIABLE_NAME"
- DATABASE_PORT = "DATABASE_PORT"
- DATABASE_PASSWORD = "DATABASE_PASSWORD"
+ [source.consul]
+ VALUE_IN_TEMPLATE = "path/to/value/in/consul"
+ DATABASE_HOST = "myapp/settings/database_host"
+ # it is possible to use environment variables within configuration files, here 
+ # ${COUNTRY} will be replaced with the value of the COUNTRY environment variable
+ COUNTRY_SPECIFIC_VAR = "myapp/settings/${COUNTRY}/some_setting"
  
  # You can optionally also provide parameters to the source to config it
+ [source.consul.options]
+ # (optional) address of consul node, in format host:port
+ address = "myconsul.host:6789"
+ # (optional) should SSL be used for the connection (default false)
+ ssl = true
+ # (optional) should SSL certificates be verified (default true)
+ verify_ssl = false
+ 
+ # backends cascade in a similar way to CSS, this allows us to override values, e.g. for use in a local development environment
+ # here DATABASE_HOST will be override the value from consul if the environment variable is set
+ [source.env]
+ VALUE_IN_TEMPLATE = "ENVIRONMENT_VARIABLE_NAME"
+ DATABASE_HOST = "DATABASE_HOST"
+ DATABASE_PASSWORD = "DATABASE_PASSWORD"
+ 
  [source.env.options]
- # don't throw an error if an expect environment variable isn't set, instead we can use default values in the template
+ # (optional) don't throw an error if an expect environment variable isn't set, instead we can use default values in the template
  ignore_uninitialised = true
  ```
  

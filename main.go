@@ -89,7 +89,7 @@ func main() {
 
 		values := config.GetValues()
 		tmpl, err := template.New("main").Funcs(template.FuncMap{
-			"getV": func(key string, defaultValue ...string) string {
+			"getV": func(key string, defaultValue ...string) interface{} {
 				if value, ok := values[key]; ok {
 					return value
 				} else if len(defaultValue) >= 1 {
