@@ -36,8 +36,8 @@ Confx is a minimal configuration management tool which makes it easy to inject v
  # backends are defined as sources with its subkeys and values being template relative keys and lookup keys for the source
  [source.env]
  VALUE_IN_TEMPLATE = "ENVIRONMENT_VARIABLE_NAME"
- DATABASE_PORT = "3306"
- DATABASE_PASSWORD = "super-secure-password"
+ DATABASE_PORT = "DATABASE_PORT"
+ DATABASE_PASSWORD = "DATABASE_PASSWORD"
  
  # You can optionally also provide parameters to the source to config it
  [source.env.options]
@@ -46,7 +46,7 @@ Confx is a minimal configuration management tool which makes it easy to inject v
  ```
  
  ####  Templates
- Templates are standard go/text templates, use the function `getV` to access a value provided by a backend. You can optionally pass a second parameter to `getV` to specify a default value if the backend hasn't returned one.
+ Templates are standard `go/text` templates, use the function `getV` to access a value provided by a backend. You can optionally pass a second parameter to `getV` to specify a default value if the backend hasn't returned one.
  ```yaml
  ---
 host: 0.0.0.0
