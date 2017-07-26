@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"math/rand"
 	"os"
 	"os/user"
 	"path"
@@ -11,6 +12,7 @@ import (
 	"strings"
 	"syscall"
 	"text/template"
+	"time"
 )
 
 const DEFAULT_TEMPLATE_PATH = "/etc/confx/templates"
@@ -19,6 +21,16 @@ const DEFAULT_TEMPLATE_PATH = "/etc/confx/templates"
 // go build -ldflags "-X main.version=0.0.2 -X main.commitId=$(git rev-parse --short HEAD)"
 var version string
 var commitId string
+
+func randomStr(n int) string {
+	rand.Seed(time.Now().UTC().UnixNano())
+	var chars = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+	output := make([]rune, n)
+	for i := range output {
+		output[i] = chars[rand.Intn(len(chars))]
+	}
+	return string(output)
+}
 
 func main() {
 	configurationDirFlag := flag.String("c", "", "configuration path directory")
@@ -131,8 +143,7 @@ func main() {
 
 		var permissions os.FileMode
 		if config.Template.Permissions != nil {
-
-			intPermissions, err := strconv.ParseInt(*config.Template.Permissions, 10, 64)
+			intPermissions, err := strconv.ParseUint(*config.Template.Permissions, 8, 64)
 			if err != nil {
 				log.Fatal("Invalid value for permissions")
 			}
@@ -143,7 +154,7 @@ func main() {
 
 		// open output file in temp dir in case there are errors writing the template, we don't want to
 		// overwrite the file with nothing
-		outputFilePath := path.Join(os.TempDir(), "input.txt")
+		outputFilePath := path.Join(os.TempDir(), randomStr(16))
 		outputFile, err := os.OpenFile(outputFilePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, permissions)
 		if err != nil {
 			log.Fatal(outputFile)
