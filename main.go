@@ -3,9 +3,9 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/opencontainers/runc/libcontainer/user"
 	"log"
 	"os"
+	"os/user"
 	"path"
 	"strconv"
 	"strings"
@@ -164,30 +164,36 @@ func main() {
 
 		// set uid and gid
 		if config.Template.Gid != nil || config.Template.Uid != nil {
-			currentUser, err := user.CurrentUser()
+			currentUser, err := user.Current()
 
-			var uid int
-			var gid int
+			var uid int64
+			var gid int64
 
 			if config.Template.Uid == nil {
 				if err != nil {
 					log.Fatal("Could not set uid, error getting current user")
 				}
-				uid = currentUser.Uid
+				uid, err = strconv.ParseInt(currentUser.Uid, 10, 64)
+				if err != nil {
+					panic("Unable to parse uid for current user")
+				}
 			} else {
-				uid = int(*config.Template.Uid)
+				uid = *config.Template.Uid
 			}
 
 			if config.Template.Gid == nil {
 				if err != nil {
 					log.Fatal("Could not set gid, error getting current user")
 				}
-				gid = currentUser.Gid
+				gid, err = strconv.ParseInt(currentUser.Gid, 10, 64)
+				if err != nil {
+					panic("Unable to parse gid for current user")
+				}
 			} else {
-				gid = int(*config.Template.Gid)
+				gid = *config.Template.Gid
 			}
 
-			err = syscall.Chown(config.Template.Dest, uid, gid)
+			err = syscall.Chown(config.Template.Dest, int(uid), int(gid))
 			if err != nil {
 				log.Fatal(fmt.Sprintf("Error: Could not set uid/gid: %s", err))
 			}
