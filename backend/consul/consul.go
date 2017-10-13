@@ -78,7 +78,7 @@ func New(options map[string]interface{}) (ConsulBackend, error) {
 			} else {
 				return backend, errors.New(fmt.Sprintf("Invalid type for option '%s', expected string", option))
 			}
-		case "string":
+		case "address":
 			if address, ok := value.(string); ok {
 				// TODO: regex to validate address is in format host:port
 				backend.address = address
