@@ -68,9 +68,9 @@ Confx is a minimal configuration management tool which makes it easy to inject v
  ```yaml
  ---
 host: 0.0.0.0
-port: {{getV DATABASE_PORT}}
-database_name: {{getV DATABASE_NAME "somedatabase"}}
-database_password: {{getV DATABASE_PASSWORD}}
+port: {{getV "DATABASE_PORT}"}
+database_name: {{getV "DATABASE_NAME" "somedatabase"}}
+database_password: {{getV "DATABASE_PASSWORD"}}
 ```
 
 There are also other helper functions available
