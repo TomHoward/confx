@@ -141,13 +141,13 @@ func parseConfig(path string) (*config, error) {
 	if rawConfig.Template.Src == "" {
 		log.Fatalf("src not specified for template %s\n", path)
 	} else {
-		template.Src = rawConfig.Template.Src
+		template.Src = parseEnvVariableString(rawConfig.Template.Src)
 	}
 
 	if rawConfig.Template.Dest == "" {
 		log.Fatalf("dest not specified for template %s\n", path)
 	} else {
-		template.Dest = rawConfig.Template.Dest
+		template.Dest = parseEnvVariableString(rawConfig.Template.Dest)
 	}
 
 	// use metadata to work out which template keys are set
