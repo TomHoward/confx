@@ -4,15 +4,15 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	strings "strings"
+	"strings"
 )
 
 type EnvBackend struct {
 	ignoreUninitialised bool
 }
 
-func (b EnvBackend) GetValues(keyPairs map[string]string) (map[string]string, error) {
-	output := map[string]string{}
+func (b EnvBackend) GetValues(keyPairs map[string]string) (map[string]interface{}, error) {
+	output := map[string]interface{}{}
 
 	for name, envVariableName := range keyPairs {
 		value := os.Getenv(envVariableName)
