@@ -106,11 +106,13 @@ func main() {
 			"getEnv": func(key string, defaultValue ...string) string {
 				value := os.Getenv(key)
 
-				if value == "" && len(defaultValue) >= 1 {
+				if value == "" && len(defaultValue) > 0 {
 					return defaultValue[0]
+				} else if len(value) > 0 {
+					return value
 				} else {
 					log.Fatalf("Error: No value specified for env variable \"%s\"\n", key)
-					return value
+					return ""
 				}
 			},
 			"hasEnv": func(key string) bool {
